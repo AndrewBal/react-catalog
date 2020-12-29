@@ -1,33 +1,54 @@
 import React, { Component } from 'react'
 import classes from './Product.module.css'
+import axios from '../../axios/axios-catalog'
+//import Loader from '../UI/Loader/Loader'
 
 class Product extends Component {
   state = {
-    id: 1,
-    name: 'Имя товара',
-    description: 'Описание товара',
-    price: 120 + ' грн',
-    discount: {
-      include: false,
-      discountValue: '10%',
-      discountDate: '2021-01-01',
-    },
+    name: '',
+    description: '',
+    price: 0,
+    discountValue: 0,
+    discountDate: '',
     image: '',
+    loading: true,
   }
 
   onDelete = () => {}
 
   onEdit = () => {}
 
+  async componentDidMount() {
+    try {
+      const response = await axios.get(`/products.json`)
+
+      const product = response.data
+      console.log(product)
+      this.setState({
+        product,
+        loading: false,
+      })
+    } catch (e) {
+      console.log(this.props)
+      console.log(e)
+    }
+  }
+
   render() {
     return (
-      <div className={classes.Product}>
-        <h3>Product name{this.state.name}</h3>
-        <p>{this.state.description}</p>
-        <p>{this.state.price}</p>
+      <div>
+        {/* {this.state.loading ? (
+          <Loader />
+        ) : ( */}
+        <div className={classes.Product}>
+          <h3>{this.state.name}</h3>
+          <p>{this.state.description}</p>
+          <p>{this.state.price}</p>
 
-        <button onClick={this.onDelete}>Удалить товар</button>
-        <button onClick={this.onEdit}>Редактировать</button>
+          <button onClick={this.onDelete}>Удалить товар</button>
+          <button onClick={this.onEdit}>Редактировать</button>
+        </div>
+        {/* )} */}
       </div>
     )
   }

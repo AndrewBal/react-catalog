@@ -3,7 +3,7 @@ import classes from './ProductCreator.module.css'
 import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
 import Select from '../../components/UI/Select/Select'
-import axios from 'axios'
+import axios from '../../axios/axios-catalog'
 import {
   createControl,
   validateName,
@@ -69,7 +69,7 @@ export default class ProductCreator extends Component {
     event.preventDefault()
   }
 
-  createProductHandler = (event) => {
+  createProductHandler = async (event) => {
     event.preventDefault()
 
     const productItem = {
@@ -81,17 +81,16 @@ export default class ProductCreator extends Component {
       discountValue: this.state.discountValue,
     }
 
-    console.log(productItem)
-
-    axios
-      .post(
-        'https://react-catalog-f8902-default-rtdb.firebaseio.com/products.json',
-        productItem
-      )
-      .then((response) => {
-        console.log(response)
+    try {
+      await axios.post('/products.json', productItem)
+      this.setState({
+        discountValue: '',
+        isFormValid: false,
+        formControls: createFormControls(),
       })
-      .catch((error) => console.log(error))
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   changeHandler = (value, controlName) => {
